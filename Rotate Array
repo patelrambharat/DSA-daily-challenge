@@ -1,0 +1,83 @@
+Given an array, rotate the array to the right by k steps, where k is non-negative.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+
+
+Approach 1--------------Naive Approach----------------
+
+pichhe se jo bhi hai usko ek second array me store kar lenge
+### then second loop and store this value  
+but isase time and space complexity O(n) and O(n)
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        if(nums.size()==1) return;
+        k = k%nums.size();
+        vector<int> ans;
+        ans = nums;
+        int i =0;
+        while(i<nums.size()){
+            nums[(i+k)%nums.size()] = ans[i];
+            i++;
+        }
+        
+    
+    }
+};
+
+
+
+
+
+Approach 2--------------best Approach----------------
+
+## now reverse the first half
+
+like ulta ka ulta = sidhaaaaaaaaaaa
+ again one loop for nums to n-k-1
+ 
+ 
+ 
+ class Solution {
+public:
+    
+    void reverse(vector<int> &num,int low,int high)
+    {
+       while(low<high)
+       {
+           swap(num[low],num[high]);
+           low++;
+           high--;
+       }
+    }
+    void rotate(vector<int>& nums, int k) {
+        
+        int n=(int)nums.size();
+        k=k%n;
+        reverse(nums,0,n-k-1);
+        reverse(nums,n-k,n-1);
+        reverse(nums,0,n-1);
+    }
+};
+
+
+
+**********this also*******
+void rotate(vector<int>& nums, int k) { //lets say [1,2,3,4,5,6,7]
+        int n=nums.size();
+        k=k%n; // If rotation is greater than array size
+        reverse(nums.begin(),nums.end()-k); // [4,3,2,1,5,6,7]
+        reverse(nums.begin()+(n-k),nums.end()); //[4,3,2,1,7,6,5]
+        reverse(nums.begin(),nums.end()); // [5,6,7,1,2,3,4]
+    }
+    
+    *****************
