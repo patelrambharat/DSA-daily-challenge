@@ -1,0 +1,87 @@
+we have to count the number of ways to express the number
+as a sum of consecutive numbers
+
+k - length of each answer
+
+n = 15
+k = 1 -> 15
+k = 2 -> 7 + 8
+k = 3 -> 4 + 5 + 6
+k = 4 -> No answer
+k = 5 -> 1 + 2 + 3 + 4 + 5
+
+so for some k, lets say that the starting element is x, which means
+x + (x + 1) + (x + 1) + .... (x + (k-1)) = N;
+kx + k(k-1)/2 = N
+
+x = (N - k*(k-1))/k
+x = numerator/denominator
+
+also it is given that x is +ve, so N - k*(k-1)/2 > 0
+=> k(k-1) < 2N
+so basically we have to explore all the k values from 1 till k(k-1) becomes gte 2N
+also, a k is valid , that is we can form a series of length k only when x is an integer
+
+x = integer
+or numerator % denominator = 0 - (condition 1)
+
+so iterating over each k as stated above , whenever condition 1 holds we will increment our count
+
+
+class Solution {
+public:
+    int consecutiveNumbersSum(int n) {
+     int count=0;
+        for(int k=1;k*(k-1)<2*n;k++)
+        {
+            int nr=n-(k*(k-1))/2;
+            int dr=k;
+            if(nr%dr==0)
+            {
+                count++;
+            }
+                
+        }
+        return count;
+    }
+};
+
+
+
+
+Approch 2>>>>>>>>>>>
+  // Forumula derivation
+    // Sum of n consecutive integers say N = n * (n+1) /2 --> this always starts from 0 (first element), n (last element)
+    // for the given problem we need a formulat where we need N matching a (starting number can be 1 or some other number)
+    // and lenght of the sub consecutive numbers which make up to sum N  say L
+    // N = a + (a + 1) + (a+2) + (a+3) + .... (a+L)
+    // eg: 15 = if a = 1 (1), (1 + 1), (1 + 2), (1 + 3), (1 + 4)  -->  (1+2+3+4+5)
+    //             L=4    a, a+1, a+2, a+3, a+4 --> so L = 4 if a = 1
+    // similary if a = 2 (2) + (2+1) + (2+2) + (2+3) ---> (2 + 3 + 4 + 5 + 6)--> we couldnt get 15 so discard
+    //          if a = 3 (3) + (3+1) + (3+4) --> 3 + 4 + 7 ---> we couldn't get 15 so discard
+    //          if a = 4 (4) + (4+1) + (4+2) ==> 4 + 5 + 6 ---> we got 15 
+    //                      (a) + (a+1) + (a+2)===> so when a= 4, l = 2
+    //          if a = 5 not possible  5 + 6 + 7. exceeds 15
+    //          if a = 6 not possible
+    //          if a = 7 (7) + (7+1) == 7 + 8 ==> 15 (a) + (a+1) --> so when a = 7 L = 1
+    // So let's generalize
+    // N = a + (a + 1) + (a+2) + (a+3) + .... (a+L)
+    // there are l + 1 times a's in the above equation
+    // N = (l + 1)*a + (1+2+3+4+...L)
+    // N = la + l * (l+1)/2
+    // (N - (l * (l+1)/2))/l = a
+    // To find the maximum lenght possible we have to start from a == 1
+    
+    int consecutiveNumbersSum(int N) {
+        int sum {0};
+        int maxLen = 1;
+        for (; sum < N; maxLen++)
+            sum += maxLen;
+        
+        int count {0};
+        for (int l = 1; l < maxLen; l++) {
+            if (((N - l * (l+1)/2)%l) == 0)
+                ++count;
+        }
+        return count;
+    }
