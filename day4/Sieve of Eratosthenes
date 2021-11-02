@@ -1,0 +1,78 @@
+Given a number n, print all primes smaller than or equal to n. It is also given that n is a small number. 
+Input : n =10
+Output : 2 3 5 7 
+Input : n = 20 
+Output: 2 3 5 7 11 13 17 19
+
+Explanation with Example: 
+Let us take an example when n = 50. So we need to print all prime numbers smaller than or equal to 50. 
+We create a list of all numbers from 2 to 50. 
+1.According to the algorithm we will mark all the numbers which are divisible by 2 and are greater than or equal to the square of it. 
+2.Now we move to our next unmarked number 3 and mark all the numbers which are multiples of 3 and are greater than or equal to 
+the square of it. 
+3.We move to our next unmarked number 5 and mark all multiples of 5 and are greater than or equal to the square of it. 
+We continue this process and our final table will look like below: 
+So the prime numbers are the unmarked ones: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.
+
+
+memset in C++
+Difficulty Level : Easy
+Last Updated : 28 Oct, 2020
+Converts the value ch to unsigned char and copies it into each of the first n characters of the object pointed to by str[]. 
+If the object is not trivially-copyable (e.g., scalar, array, or a C-compatible struct), the behavior is undefined.
+If n is greater than the size of the object pointed to by str, the behavior is undefined.
+
+void* memset( void* str, int ch, size_t n);
+Parameters
+str[] : Pointer to the object to copy the character.
+ch : The character to copy.
+n : Number of bytes to copy.
+Return value :
+The memset() function returns str, the pointer to the destination string. 
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+void siev(int n)
+{
+
+    bool prime[n+1];
+    {
+
+        memset(prime,true,sizeof(prime));
+        for(int p=2;p*p<=n;p++)
+        {
+
+            if(prime[p]==true)
+            {
+
+                for(int i=p*p;i<=n;i += p)
+
+                    prime[i]=false;
+
+
+            }
+
+        }
+            for(int p=2;p<=n;p++)
+            {
+                if(prime[p])
+                    cout<<p<<" ";
+            }
+    }
+}
+int main()
+{
+
+int n = 30;
+    cout << "Following are the prime numbers smaller "
+         << " than or equal to " << n << endl;
+    siev(n);
+    return 0;
+}
+
+
+Time Complexity: O(n*log(log(n)))
+
+Auxiliary Space: O(n)
