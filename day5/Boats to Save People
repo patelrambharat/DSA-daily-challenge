@@ -1,0 +1,88 @@
+You are given an array people where people[i] is the weight of the ith person, and an infinite number of boats where each boat can carry a maximum weight of limit. Each boat carries at most two people at the same time, provided the sum of the weight of those people is at most limit.
+
+Return the minimum number of boats to carry every given person.
+
+ 
+
+Example 1:
+
+Input: people = [1,2], limit = 3
+Output: 1
+Explanation: 1 boat (1, 2)
+Example 2:
+
+Input: people = [3,2,2,1], limit = 3
+Output: 3
+Explanation: 3 boats (1, 2), (2) and (3)
+Example 3:
+
+Input: people = [3,5,3,4], limit = 5
+Output: 4
+Explanation: 4 boats (3), (3), (4), (5)
+ 
+
+Constraints:
+
+1 <= people.length <= 5 * 104
+1 <= people[i] <= limit <= 3 * 104
+two pointer approach
+
+class Solution {
+public:
+    int numRescueBoats(vector<int>& p, int limit) {
+        int  n  =  p.size();
+        sort(p.begin() , p.end());
+        int ans = 0 ; 
+         
+        int i = 0 ; int j = n-1;
+        while(i <= j)
+        {
+            if(p[i] + p[j] <= limit)
+            {
+                ans++; 
+                i++;
+                j--;
+            }
+            else 
+            {
+                ans++;
+                j--;
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+method 2
+class Solution {
+public:
+    int numRescueBoats(vector<int>& p, int limit) {
+        // Greedy
+        
+        // sort the array
+        sort(p.begin(), p.end());
+        
+        // 2 pointers approach
+        int nboats = 0, l = 0, r = p.size() - 1;
+        
+        // Why I am doing 'r -= 1' ?
+        // for example - [1, 2, 4, 4, 5, 7]
+        
+        // when l = 0, r = 5 -> 1 + 7 > limit; but 1 + 5 can taken together
+        // we can infer one more thing that to bind 7 with another number; our best possible bet is to map it with smallest number (or p[l] in general), but that is not the case here, so for '7' one boat has to be used up
+        
+        
+        while(l <= r){
+            nboats += 1;
+            
+            // best case scenario. i.e. for a boat we can save 2 ppl
+            if(p[l] + p[r] <= limit) l += 1;
+            
+            r -= 1;
+        }
+        
+        return nboats;
+    }
+};
