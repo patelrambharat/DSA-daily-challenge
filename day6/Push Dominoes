@@ -1,0 +1,114 @@
+There are n dominoes in a line, and we place each domino vertically upright. In the beginning, we simultaneously push some of the dominoes either to the left or to the right.
+
+After each second, each domino that is falling to the left pushes the adjacent domino on the left. Similarly, the dominoes falling to the right push their adjacent dominoes standing on the right.
+
+When a vertical domino has dominoes falling on it from both sides, it stays still due to the balance of the forces.
+
+For the purposes of this question, we will consider that a falling domino expends no additional force to a falling or already fallen domino.
+
+You are given a string dominoes representing the initial state where:
+
+dominoes[i] = 'L', if the ith domino has been pushed to the left,
+dominoes[i] = 'R', if the ith domino has been pushed to the right, and
+dominoes[i] = '.', if the ith domino has not been pushed.
+Return a string representing the final state.
+
+ 
+
+Example 1:
+
+Input: dominoes = "RR.L"
+Output: "RR.L"
+Explanation: The first domino expends no additional force on the second domino.
+Example 2:
+
+
+Input: dominoes = ".L.R...LR..L.."
+Output: "LL.RR.LLRRLL.."
+ 
+
+Constraints:
+
+n == dominoes.length
+1 <= n <= 105
+dominoes[i] is either 'L', 'R', or
+
+
+
+
+We can store all the occuerence of L and R and their index positions in array. 
+Then we can take every 2 consecutive item of the array process 4 cases based on i-1th, ith and i+1th item:
+
+Case 1: ith item = L => Make all item to left L until i-1th index if i-1th item is L
+Case 2: ith item = R and i+1th item = L => Make left half items to R  and right half item to L from the middle
+index between R-L range
+Case 3: Any other case => Make all item to right R until i+1th item index
+class Solution {
+public:
+    string pushDominoes(string s) {
+        
+        int n = s.length();
+        
+        // store the index of L and R in track array => L=0 and R=1 
+        int track[n][2];
+        int k = 0;
+        for(int i=0;i<n;i++)
+        {
+            if(s[i]=='.')continue;
+            else if(s[i]=='R')track[k][0]=1,track[k][1]=i,k++;
+            else if(s[i]=='L')track[k][0]=0,track[k][1]=i,k++;
+        }
+        
+        // loop through track array and handle 3 cases
+        int t_n = k;
+        for(int i=0;i<(t_n-1);i++)
+        {
+            // Case 1: ith item = L => Make all item to left L until i-1th index if i-1th item is L
+            if(track[i][0]==0)
+            {
+                if((i-1>=0 && track[i-1][0]==0) || i-1<0)
+                {
+                    int limit = i-1>=0 ? track[i-1][1] : 0;
+                    int k = track[i][1];
+                    while(k>=limit)s[k--]='L';
+                }
+            }
+            
+            //Case 2: ith item = R and i+1th item = L => Make left half items to R
+            // and right half item to L from the middle index between R-L range
+            else if(track[i][0]==1 && track[i+1][0]==0)
+            {
+                int range = (track[i+1][1] - track[i][1] -1)/2;
+                for(int k=1;k<=range;k++)s[track[i][1]+k]='R';
+                for(int k=1;k<=range;k++)s[track[i+1][1]-k]='L';
+            }
+            
+            //Case 3: Any other case => Make all item to right R until i+1th item index
+            else 
+            {
+                int k = track[i][1];
+                while(k<track[i+1][1])s[++k]='R';
+            }
+        }
+        
+        // handle Case 3 for last element
+        if(t_n>0 && track[t_n-1][0]==1)
+        {
+            int k = track[t_n-1][1];
+            while(k<n)s[k++]='R';
+        }
+        
+        // handle Case 1 for last element 
+        if(t_n>0 && track[t_n-1][0]==0)
+        {
+            if((t_n>1 && track[t_n-2][0]==0) || t_n==1)
+            {
+                int limit = t_n>1 ? track[t_n-2][1] : 0;
+                int k = track[t_n-1][1];
+                while(k>=limit)s[k--]='L';
+            }
+        }
+        
+        return s;
+    }
+};
