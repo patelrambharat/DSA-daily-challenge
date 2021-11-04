@@ -1,0 +1,106 @@
+Given an unsorted integer array nums, return the smallest missing positive integer.
+
+You must implement an algorithm that runs in O(n) time and uses constant extra space.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,0]
+Output: 3
+Example 2:
+
+Input: nums = [3,4,-1,1]
+Output: 2
+Example 3:
+
+Input: nums = [7,8,9,11,12]
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 5 * 105
+-231 <= nums[i] <= 231 - 1
+
+A naive method to solve this problem is to search all positive integers, starting from 1 in the given array. We may have to
+search at most n+1 numbers in the given array. So this solution takes O(n^2) in worst
+case.
+We can use sorting to solve it in lesser time complexity. We can sort the array in O(nLogn) time. Once the array is 
+sorted, then all we need to do is a linear scan of the array. So this approach takes O(nLogn + n) time which is O(nLogn).
+
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        sort(nums.begin() , nums.end());
+        int ans = 1 ; 
+        for(int i =0 ; i<nums.size() ; i++){
+            if(nums[i]==ans)
+                ++ans;
+        }
+        return ans;
+         }
+};
+
+We can also use hashing. We can build a hash table of all positive elements in the given array. Once the hash table is built. 
+We can look in the hash table for all positive integers, starting from 1. As soon as we find a number which is not there in hash
+table, we return it. This approach may take O(n) time on average, 
+but it requires O(n) extra space.
+
+ In this problem, we have created a list full of 0’s with size of the max() value of our given array. Now, whenever we encounter any positive value in our original array, we change the index value of our list to 1. So, after we are done, we simply iterate through our modified list, the first 0 we encounter,
+ its (index value + 1) should be our answer 
+ 
+ 
+ vector<int> plusOne(vector<int>& digits) {
+	int k = digits.size() - 1;
+	digits.push_back(0);
+	while (k >= 0)
+	{
+		if (digits[k] == 9) {
+			digits[k] = 0;
+		}
+		else {
+			++digits[k];
+			break;
+		}
+		--k;
+	}
+	if (digits[0]) 
+		digits.pop_back();
+	else
+		digits[0] = 1;
+	return digits;
+}
+
+
+
+
+
+//This might not be the optimized version but it is quite easy to understand 
+class Solution {
+public:
+    vector<int> plusOne(vector<int> digits) {
+            digits[digits.size()-1] += 1; //Increment by one
+        
+            //The following codes transverses the array to make incremental changes
+            for(int i=digits.size()-1; i>=0; i--) 
+            {   
+                //Simple decimal number system addition
+                // 19 + 1 = 1 10 but we write 20. Right?
+                //The same logic applies here, if an integer is greater than 9(which is basically 10), change that integer to 0 and add 1 to the integer infront of it.
+                if(digits[i] > 9){
+                    //This is to modify the array if the increment happens at the beginning
+                    //For the test case like 99 + 1 = 100, we need to insert 1 at the beginning 
+                    if(i == 0){
+                        digits[i] = 0;
+                        digits.insert(digits.begin(),1);
+                    //Simple decimal number system addition that I mentioned above
+                    }else{
+                        digits[i] = 0;
+                        digits[i-1] += 1;
+                    }
+                }    
+            }
+        return digits;
+    }
+};
